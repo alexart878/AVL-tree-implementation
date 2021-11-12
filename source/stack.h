@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include "spisok.h"
 
 template <typename T>
