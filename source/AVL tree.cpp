@@ -1,5 +1,6 @@
 #include <iostream>
 #include "stack.h"
+#include "queue.h"
 
 struct node {
 	node(int val) {
@@ -26,7 +27,7 @@ public:
 
 	void itinorder(node* t);    //iteratve
 	void itpreorder(node* t);
-	void itpostorder(node* t);  
+	void itpostorder(node* t);
 	void levelorder(node* t);
 
 	int height(node* t) {
@@ -40,7 +41,7 @@ public:
 
 		t->height = std::max(heightleft, heightright);
 	}
-	
+
 	int bfactor(node* t) {
 		if (!t->right || !t->left) return 0;
 		return t->right->height - t->left->height;
@@ -50,6 +51,7 @@ public:
 	node* r_left(node* t);
 	node* balance(node* t);
 
+	node* getnode(int value);
 	node* getmin(node* t);
 	node* deletemin(node* t);
 
@@ -143,19 +145,17 @@ void avl::itpostorder(node* t) {
 void avl::levelorder(node* t) {
 	if (!t) return;
 
-	list<node*> queue;
-	queue.addlastnode(t);
-
+	Queue<node*> q;
+	q.enQueue(t);	
 	node* temp = nullptr;
 
-	while (queue.listsize()) {
-		temp = queue.head->val;
-		queue.deletenode();
+	while (q.size()) {
+		temp = q.front->data;
+		q.deQueue();
 
 		std::cout << temp->value << " ";
-
-		if (temp->left) queue.addlastnode(temp->left);
-		if (temp->right) queue.addlastnode(temp->right);
+		if (temp->left) q.enQueue(temp->left);
+		if (temp->right) q.enQueue(temp->right);
 	}
 }
 
@@ -199,12 +199,22 @@ node* avl::balance(node* t) {
 	return t;
 }
 
+node* avl::getnode(int value) {
+	node* temp = root;
+	while (temp) {
+		if (temp->value > value) temp = temp->left;
+		else if (temp->value < value) temp = temp->right;
+		else if (temp->value == value) return temp;
+	}
+	return nullptr;
+}
+
 node* avl::getmin(node* t) {
 	if (!t->left) return t;
 	return getmin(t->left);
 }
 
-node* avl::deletemin(node* t) {  
+node* avl::deletemin(node* t) {
 	if (!t->left) return t->right;
 
 	t->left = deletemin(t->left);
@@ -244,22 +254,21 @@ node* avl::deletenode(node* t, int value) {
 }
 
 void avl::display() {
-	levelorder(root);
-	std::cout << std::endl; 
+	itinorder(root);
+	std::cout << std::endl;
 }
 
 int main() {
 	int count;
 	int range = 16384;
 	avl q;
-	
+
 	std::cout << "Input the amount of tree elements: ";
 	std::cin >> count;
 
 	srand(time(NULL));
-	for (int i = 0; i < count; i++) q.addnode(20 - i);//q.addnode((rand() % range) - (range / 2));
-	
-	q.display();
+	for (int i = 0; i < count; i++) q.addnode((rand() % range) - (range / 2));
 
+	q.display();
 	return 0;
 }
