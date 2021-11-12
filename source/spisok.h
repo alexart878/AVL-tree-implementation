@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 template <typename T>
 class list {
@@ -10,7 +9,6 @@ private:
 public:
 	class Iterator;
 	node* head;
-	node* tail;
 
 public:
 	list();
@@ -18,9 +16,7 @@ public:
 	Iterator begin() const;
 	Iterator end() const;
 	void addnode(const T& val);
-	void addlastnode(const T& val);
 	void deletenode();
-	void deletelastnode();
 	size_t listsize();
 	void listprint();
 
@@ -89,22 +85,7 @@ template <typename T>
 void list<T>::addnode(const T& val) {
 	node* container = new node(val);
 	container->next = head;
-	head = tail = container;
-}
-
-template <typename T>
-void list<T>::addlastnode(const T& val) {
-	if (head) {
-		node* temp = new node;
-		temp->val = val;
-		temp->next = nullptr;
-
-		if (!head) head = tail = new node; 
-		else {
-			tail->next = temp;
-			tail = temp;
-		}
-	}
+	head = container;
 }
 
 template <typename T>
@@ -113,22 +94,6 @@ void list<T>::deletenode() {
 		node* newhead = head->next;
 		delete head;
 		head = newhead;
-	}
-}
-
-template <typename T>
-void list<T>::deletelastnode() {
-	if (head) {
-		node* temp = new node;
-		node* prev = new node;
-		temp = head;
-		while (temp->next != nullptr) {
-			prev = temp;
-			temp = temp->next;
-		}
-		tail = prev;
-		prev->next = nullptr;
-		delete temp;
 	}
 }
 
